@@ -3,11 +3,23 @@
 <html>
 <head>
     <meta name="viewport" content="width=device-width" />
+    <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
     <title>SportStore</title>
 </head>
 <body>
-    <div>
-        @RenderBody()
+    <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">SportsStore</a>
+        </div>
+    </nav>
+    <div class="row m-1 p-1">
+        <div id="categories" class="col-3">
+            Put something useful here later
+        </div>
+
+        <div class="col-9">
+            @RenderBody()
+        </div>
     </div>
 </body>
 </html>
