@@ -21,6 +21,8 @@ namespace SportsStore
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
+                    //Отключение проверки области видимости для Entity Framework Core
+                    webBuilder.UseDefaultServiceProvider(options => options.ValidateScopes = false);
                 });
     }
 }

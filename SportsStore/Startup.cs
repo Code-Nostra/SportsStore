@@ -1,23 +1,37 @@
-using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Hosting;
-using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
-using SportsStore.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
+using SportsStore.Models;
+using Microsoft.Extensions.Configuration; //Для бд
+using Microsoft.EntityFrameworkCore;//Для бд
+using Microsoft.Extensions.Hosting;
 
 namespace SportsStore
 {
     public class Startup
     {
+        public IConfiguration Configuration;//Для БД
+        public Startup(IConfiguration configuration)
+        {
+            Configuration = configuration;
+        }
+
         // Используйте этот метод для добавления служб в контейнер.
         public void ConfigureServices(IServiceCollection services)
         {
+            //https://docs.microsoft.com/ru-ru/ef/core/dbcontext-configuration/
+            services.AddDbContext<ApplicationDbContext>(options =>
+             options.UseSqlServer(
+             Configuration["Data:SportStoreProducts:ConnectionString"]));
+
+            services.AddTransient<IProductRepository, EFProductRepository>();
+
             services.AddMvc(option => option.EnableEndpointRouting = false);
-            services.AddTransient<IProductRepository, FakeProductRepository>();
                         /*
             Добавленный в метод ConfigureServices () оператор сообщает инфраструктуре ASP.NET Core о том, что когда компоненту вроде контроллера необходима реализация интерфейса IProductRepository, она должна получить экземпляр класса
             FakeProductRepository. Метод AddTransient () указывает, что каждый раз, когда
@@ -27,10 +41,7 @@ namespace SportsStore
         }
 
         // Используйте этот метод для настройки конвейера HTTP-запросов.
-        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) //используется для настройки средств, которые получают и
-                                                                                //обрабатывают HTTP-запросы.Каждый метод, вызываемый в методе Configure() ,
-                                                                                //представляет собой расширяющий метод, который настраивает средство обработки
-                                                                                //HTTP-запросов 
+        public void Configure(IApplicationBuilder app, IWebHostEnvironment env) //используется для настройки средств, которые получают и обрабатывают HTTP-запросы.Каждый метод, вызываемый в методе Configure() , представляет собой расширяющий метод, который настраивает средство обработки HTTP-запросов 
         {
             if (env.IsDevelopment())
             {
@@ -47,6 +58,7 @@ namespace SportsStore
                     name: "default",
                     template: "{controller=Product}/{action=List}/{id?}");
             });
+            SeedData.EnsurePopulated(app);
         }
     }
 }
