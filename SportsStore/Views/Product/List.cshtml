@@ -1,11 +1,14 @@
-﻿@model IEnumerable<Product>
+﻿@model ProductsListViewModel
 
 
-@foreach(var p in Model)
- {
+@foreach (var p in Model.Products)
+{
     <div>
         <h3>@p.Name</h3>
         @p.Description
         <h4>@p.Price.ToString("c")</h4>
     </div>
- }
+}
+<!--Когда механизм Razor обнаруживает атрибутpage-model в элементе div, он обращается
+    к классу PageLinkTagHelper(который подключён в _ViewImports.cshtml) для преобразования элемента, что и дает набор ссылок-->
+<div page-model="@Model.PagingInfo" page-action="List"></div>
