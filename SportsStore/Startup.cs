@@ -66,14 +66,29 @@ namespace SportsStore
 
             app.UseMvc(routes =>
             {
+                //¬ыводит указанную страницу товаров заданной категории
                 routes.MapRoute(
-                name: "pagination",
-                template: "Products/Page{productPage}",
-                defaults: new { Controller = "Product", action = "List" });
+                name: "1",
+                template: "{category}/Page{productPage:int}",
+                defaults: new { controller = "Product", action = "List", productPage = 1 });
 
+                //¬ыводит указанную страницу отобража€ товары всех категорий
                 routes.MapRoute(
-                    name: "default",
-                    template: "{controller=Product}/{action=List}/{id?}");
+                name: "2",
+                template: "Page{productPage:int}",
+                defaults: new { controller = "Product", action = "List", productPage=1});
+                
+                //¬ыводит первую страницу товаров указанной категории
+                routes.MapRoute(
+                name: "3",
+                template: "{category}",
+                defaults: new { controller = "Product", action = "List", productPage = 1 });
+
+                //¬ыводит первую страницу списка товаров всех категорий
+                routes.MapRoute(
+                name: "4",
+                template: "",
+                defaults:new { controller = "Product", action = "List", productPage = 1 });
             });
             SeedData.EnsurePopulated(app);
             #region ѕо€снение

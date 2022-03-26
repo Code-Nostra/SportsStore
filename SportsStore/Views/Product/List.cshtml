@@ -9,5 +9,6 @@
     к классу PageLinkTagHelper(который подключён в _ViewImports.cshtml) для преобразования элемента, что и дает набор ссылок-->
 <div page-model="@Model.PagingInfo" page-action="List" page-classes-enabled="true"
      page-class="btn" page-class-normal="btn-secondary"
-     page-class-selected="btn-primary" class="btn-group pull-right m-1">
+     page-class-selected="btn-primary" page-url-category="@Model.CurrentCategory" class="btn-group pull-right m-1">
 </div>
+

@@ -33,10 +33,11 @@ namespace SportsStore.Controllers
         */
         #endregion 
 
-        public ViewResult List(int productPage = 1) =>
-            View(new ProductsListViewModel//Передаём данных ProductsListViewModel для удобства
+        public ViewResult List(string category, int productPage = 1) =>
+            View(new ProductsListViewModel//Передаём данные в ProductsListViewModel для удобства
             {
                 Products = repository.Products
+                 .Where(p => category == null || p.Category == category)
                  .OrderBy(p => p.ProductID)
                  .Skip((productPage - 1) * PageSize)
                  .Take(PageSize),
@@ -44,8 +45,10 @@ namespace SportsStore.Controllers
                 {
                     CurrentPage = productPage,
                     ItemsPerPage = PageSize,
-                    TotalItem = repository.Products.Count()
-                }
+                    TotalItem = category==null ? repository.Products.Count():
+                    repository.Products.Where(x=>x.Category==category).Count()
+                },
+                CurrentCategory = category
             });
     }
 }
