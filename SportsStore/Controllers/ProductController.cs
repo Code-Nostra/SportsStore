@@ -10,6 +10,7 @@ namespace SportsStore.Controllers
 {
     public class ProductController : Controller
     {
+        //Для внедрения зависимостей
         private IProductRepository repository;
         //Сколько товаров должно отображаться на одной странице
         public int PageSize = 4;

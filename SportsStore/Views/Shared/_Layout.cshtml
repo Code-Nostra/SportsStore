@@ -3,14 +3,25 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/lib/font-awesome/css/all.css" />
     <title>SportStore</title>
 </head>
 <body>
+
     <nav class="navbar navbar-expand-sm bg-dark navbar-dark">
+
         <div class="container-fluid">
             <a class="navbar-brand" href="#">SportsStore</a>
+            <form class="d-flex">
+                <div class="row text-right">
+                    @await Component.InvokeAsync("CartSummary")
+                </div>
+            </form>
         </div>
+
     </nav>
+
+
     <div class="row m-1 p-1">
         <div id="categories" class="col-3">
             @await Component.InvokeAsync("NavigationMenu")

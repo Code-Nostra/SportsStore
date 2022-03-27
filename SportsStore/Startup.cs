@@ -11,6 +11,7 @@ using Microsoft.Extensions.Configuration; //Для бд
 using Microsoft.EntityFrameworkCore;//Для бд
 using Microsoft.Extensions.Hosting;
 
+
 namespace SportsStore
 {
     public class Startup
@@ -48,7 +49,45 @@ namespace SportsStore
             требуется реализация интерфейса IProductRepository, должен создаваться новый
             объект EFProductRepository
             */
-            services.AddMvc(option => option.EnableEndpointRouting = false);
+
+
+
+            #region Пояснение
+            /*
+            Метод AddScoped () указывает, что для удовлетворения связанных запросов к экземплярам Cart должен применяться один и тот же объект. Способ связывания запросов может быть сконфигурирован, но по умолчанию это значит, что в ответ на
+            любой запрос экземпляра Cart со стороны компонентов, которые обрабатывают тот
+            же самый HTTP-запрос, будет выдаваться один и тот же объект.
+            Вместо предоставления методу AddScoped () отображения между типами, как
+            делалось для хранилища, указывается лямбда-выражение, которое будет выполняться для удовлетворения запросов к Cart. Лямбда-выражение получает коллекцию
+            служб, которые были зарегистрированы, и передает ее методу GetCart () класса
+            SessionCart. В результате запросы для службы Cart будут обрабатываться путем
+            создания объектов SessionCart, которые сериализируют сами себя как данные сеанса, когда они модифицируются.
+            */
+            #endregion
+            services.AddScoped<Cart>(sp => SessionCart.GetCart(sp));
+            #region Пояснение
+            /*
+            Мы также добавили службу с использованием метода Addsingleton (), который
+            указывает, что всегда должен применяться один и тот же объект. Созданная служба
+            сообщает инфраструктуре MVC о том, что когда требуются реализации интерфейса
+            IHttpContextAccessor, необходимо использовать класс HttpContextAccessor.
+            Данная служба обязательна, поэтому в классе SessionCart можно получать доступ
+            к текущему сеансу
+            */
+            #endregion
+            services.AddSingleton<IHttpContextAccessor, HttpContextAccessor>();
+            
+            //Устарело. Для сессий нужно убрать                
+            services.AddMvc(/*options=>options.EnableEndpointRouting=false*/);
+            //services.AddRazorPages();
+
+            services.AddMemoryCache();
+            services.AddSession();
+            //Set Session Timeout. Default is 30 minutes.
+            services.AddSession(options =>
+            {
+                options.IdleTimeout = TimeSpan.FromMinutes(30);
+            });
 
         }
 
@@ -60,36 +99,47 @@ namespace SportsStore
                 app.UseDeveloperExceptionPage();//Этот расширяющий метод отображает детали исключения,которое произошло в приложении, что полезно во время процесса разработки
                 app.UseBrowserLink(); //Привязывания к браузеру (для удобной отладки) Microsoft.VisualStudio.Web.BrowserLink
             }
-            app.UseMvcWithDefaultRoute();//включает инфраструктуру ASP.NET Core MVC
+            
+            //Устарело. Для сессий нужно убрать      
+            //app.UseMvcWithDefaultRoute();//включает инфраструктуру ASP.NET Core MVC
             app.UseStaticFiles();//Этот расширяющий метод включает поддержку для обслуживания статического содержимого из папки wwwroot
             app.UseStatusCodePages();//Этот расширяющий метод добавляет простое сообщениев HTTP-ответы, которые иначе не имели бы тела, такие как ответы 404 - Not Found
-
-            app.UseMvc(routes =>
+            app.UseSession();
+            app.UseRouting();//Для UseEndpoints
+            app.UseEndpoints(endpoints =>
             {
                 //Выводит указанную страницу товаров заданной категории
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                 name: "1",
-                template: "{category}/Page{productPage:int}",
+                pattern: "{category}/Page{productPage:int}",
                 defaults: new { controller = "Product", action = "List", productPage = 1 });
 
                 //Выводит указанную страницу отображая товары всех категорий
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                 name: "2",
-                template: "Page{productPage:int}",
+                pattern: "Page{productPage:int}",
                 defaults: new { controller = "Product", action = "List", productPage=1});
                 
                 //Выводит первую страницу товаров указанной категории
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                 name: "3",
-                template: "{category}",
+                pattern: "{category}",
                 defaults: new { controller = "Product", action = "List", productPage = 1 });
 
                 //Выводит первую страницу списка товаров всех категорий
-                routes.MapRoute(
+                endpoints.MapControllerRoute(
                 name: "4",
-                template: "",
+                pattern: "",
                 defaults:new { controller = "Product", action = "List", productPage = 1 });
+
+                endpoints.MapControllerRoute(name: "5", pattern: "{controller}/{action}/{id?}");
+
+                endpoints.MapControllerRoute(
+                name: "6",
+                pattern: "{Prodict}/{List}",
+                defaults: new { controller = "Product", action = "List", productPage = 1 });
             });
+            
             SeedData.EnsurePopulated(app);
             #region Пояснение
             /*
