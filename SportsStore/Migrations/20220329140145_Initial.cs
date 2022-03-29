@@ -2,7 +2,7 @@
 
 namespace SportsStore.Migrations
 {
-    public partial class Orders : Migration
+    public partial class Initial : Migration
     {
         protected override void Up(MigrationBuilder migrationBuilder)
         {
@@ -12,7 +12,8 @@ namespace SportsStore.Migrations
                 {
                     OrderID = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Shipped = table.Column<bool>(type: "bit", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Linel = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Line2 = table.Column<string>(type: "nvarchar(max)", nullable: true),
                     Line3 = table.Column<string>(type: "nvarchar(max)", nullable: true),
@@ -25,6 +26,21 @@ namespace SportsStore.Migrations
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Orders", x => x.OrderID);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Products",
+                columns: table => new
+                {
+                    ProductID = table.Column<string>(type: "nvarchar(450)", nullable: false),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Description = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    Price = table.Column<decimal>(type: "decimal(18,4)", nullable: false),
+                    Category = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Products", x => x.ProductID);
                 });
 
             migrationBuilder.CreateTable(
@@ -72,6 +88,9 @@ namespace SportsStore.Migrations
 
             migrationBuilder.DropTable(
                 name: "Orders");
+
+            migrationBuilder.DropTable(
+                name: "Products");
         }
     }
 }

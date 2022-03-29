@@ -18,6 +18,10 @@ namespace SportsStore.Models
         [BindNever]
         public ICollection<CartLine> Lines { get; set; }
         [Required(ErrorMessage = "Please enter a name")]
+
+        //Стаут отправки
+        [BindNever]
+        public bool Shipped { get; set; }
         // Введите имя
         public string Name { get; set; }
         [Required(ErrorMessage = "Please enter the first address line")]
