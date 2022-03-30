@@ -158,7 +158,8 @@ namespace SportsStore
                 defaults: new { controller = "Product", action = "List", productPage = 1 });
             });
             
-            SeedData.EnsurePopulated(app);
+            SeedData.EnsurePopulated(app);//Начальное заполение данными(товарами)
+            IdentitySeedData.EnsurePopulated(app);//Начальное заполение данными(добавили админа)
             #region Пояснение
             /*
             Когда браузер запрашивает стандартный URL для приложения, конфигурация приложения сообщает MVC о необходимости создания контроллера Product

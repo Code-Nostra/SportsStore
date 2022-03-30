@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using SportsStore.Models;
 using System;
 using System.Collections.Generic;
@@ -17,11 +18,13 @@ namespace SportsStore.Controllers
             cart = cartService;
         }
         //Показ не отгруженных заказов
+        [Authorize]
         public ViewResult List() =>
             View(repository.Orders.Where(o => !o.Shipped));
         
         //Отметить как отгруженно
         [HttpPost]
+        [Authorize]
         public IActionResult MarkShipped(int orderID)
         {
             Order order = repository.Orders
