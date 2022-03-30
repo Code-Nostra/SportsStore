@@ -10,7 +10,7 @@ using SportsStore.Models;
 using Microsoft.Extensions.Configuration; //Для бд
 using Microsoft.EntityFrameworkCore;//Для бд
 using Microsoft.Extensions.Hosting;
-
+using Microsoft.AspNetCore.Identity;//Для аутентификации
 
 namespace SportsStore
 {
@@ -25,6 +25,7 @@ namespace SportsStore
         // Используйте этот метод для добавления служб в контейнер.
         public void ConfigureServices(IServiceCollection services)
         {
+            #region Пояснение
             //https://docs.microsoft.com/ru-ru/ef/core/dbcontext-configuration/
 
             // добавляем контекст ApplicationContext в качестве сервиса в приложение
@@ -32,14 +33,25 @@ namespace SportsStore
             // конструкторе контроллера через механизм внедрения зависимостей.
             //В этом случае база данных конфигурируется с помощью метода UseSqlServer()
             //и указания строки подключения, которая получена из свойства Configuration.
+            #endregion
             services.AddDbContext<ApplicationDbContext>(options =>
              options.UseSqlServer(
              Configuration["Data:SportStoreProducts:ConnectionString"]));
 
+            //Для аутентификации
+            services.AddDbContext<AppIdentityDbContext>(options =>
+            options.UseSqlServer(
+                Configuration["Data:SportStoreIdentity:ConnectionString"]));
+            services.AddIdentity<IdentityUser, IdentityRole>()
+                //Добавляет Entity Framework реализацию хранилищ сведений об удостоверениях
+                .AddEntityFrameworkStores<AppIdentityDbContext>()
+                .AddDefaultTokenProviders();
 
+            #region Пояснение
             //Компоненты в приложении, работающие с интерфейсом IProductRepository, к
             //которым в настоящий момент относится только контроллер Product, при создании
             //будут получать объект EFProductRepository, предоставляющий им доступ к информации в базе данных
+            #endregion
             services.AddTransient<IProductRepository, EFProductRepository>();
             /*
             Добавленный в метод ConfigureServices () оператор сообщает инфраструктуре ASP.NET Core о том, 
@@ -110,6 +122,7 @@ namespace SportsStore
             app.UseStaticFiles();//Этот расширяющий метод включает поддержку для обслуживания статического содержимого из папки wwwroot
             app.UseStatusCodePages();//Этот расширяющий метод добавляет простое сообщениев HTTP-ответы, которые иначе не имели бы тела, такие как ответы 404 - Not Found
             app.UseSession();
+            app.UseAuthentication();//Для Identity
             app.UseRouting();//Для UseEndpoints
             app.UseEndpoints(endpoints =>
             {
