@@ -122,8 +122,9 @@ namespace SportsStore
             app.UseStaticFiles();//Этот расширяющий метод включает поддержку для обслуживания статического содержимого из папки wwwroot
             app.UseStatusCodePages();//Этот расширяющий метод добавляет простое сообщениев HTTP-ответы, которые иначе не имели бы тела, такие как ответы 404 - Not Found
             app.UseSession();
-            app.UseAuthentication();//Для Identity
             app.UseRouting();//Для UseEndpoints
+            app.UseAuthentication();//Для Identity
+            app.UseAuthorization();//Для Identity
             app.UseEndpoints(endpoints =>
             {
                 //Выводит указанную страницу товаров заданной категории
