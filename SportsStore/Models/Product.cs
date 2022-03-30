@@ -11,11 +11,15 @@ namespace SportsStore.Models
     {
         [DatabaseGenerated(DatabaseGeneratedOption.Identity)]
         public string ProductID { get; set; }
+        [Required(ErrorMessage ="Pleas enter a product name")]
         public string Name { get; set; }
+        [Required(ErrorMessage = "Pleas enter a description name")]
         public string Description { get; set; }
-        
+        [Required]
+        [Range(0.01, double.MaxValue,ErrorMessage ="Pleas enter a positiv price")]
         [Column(TypeName = "decimal(18,4)")]
         public decimal Price { get; set; }
+        [Required(ErrorMessage = "Please specify a category")]
         public string Category { get; set; }
     }
 }

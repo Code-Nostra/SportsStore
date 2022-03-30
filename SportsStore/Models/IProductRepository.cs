@@ -25,6 +25,8 @@ namespace SportsStore.Models
         */
 
         void SaveProduct(Product product);
+
+        Product DeleteProduct(string productId);
     }
 
 }

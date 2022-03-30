@@ -15,9 +15,20 @@ namespace SportsStore.Models
         }
         public IQueryable<Product> Products => context.Products;
 
+        public Product DeleteProduct(string productId)
+        {
+            Product dbEntry = context.Products.FirstOrDefault(p => p.ProductID == productId);
+            if (dbEntry != null)
+            {
+                context.Remove(dbEntry);
+                context.SaveChanges();
+            }
+            return dbEntry;
+        }
+
         public void SaveProduct(Product product)
         {
-            if (product.ProductID == "0")
+            if (product.ProductID == null)
             {
                 context.Products.Add(product);
             }
@@ -31,11 +42,9 @@ namespace SportsStore.Models
                     dbEntry.Description = product.Description;
                     dbEntry.Price = product.Price;
                     dbEntry.Category = product.Category;
-
-                    context.SaveChanges();
-
                 }
             }
+            context.SaveChanges();
         }
     }
 }

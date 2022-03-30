@@ -4,10 +4,26 @@
 <head>
     <meta name="viewport" content="width=device-width" />
     <link rel="stylesheet" href="~/lib/bootstrap/css/bootstrap.min.css" />
+    <!--Включение проверки валидации данных на стороне клиента(аналог asp-validation на сервер)-->
+    <script src="~/lib/jquery/jquery.js"></script>
+    <script src="~/lib/jquery-validate/jquery.validate.js"></script>
+    <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.js"></script>
+
     <title>@ViewBag.Title</title>
+    <style>
+        .input-validation-error {
+            border-color: red;
+            background-color: #fee;
+        }
+    </style>
 </head>
 <body class="m-1 p-1">
     <div class="bg-info p-2"><h4>@ViewBag.Title</h4></div>
+    @if (TempData["message"] != null)
+    {
+        <div class="alert alert-success">@TempData["message"]</div>
+    }
+
     @RenderBody()
 </body>
 </html>
