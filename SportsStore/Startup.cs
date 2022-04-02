@@ -114,7 +114,12 @@ namespace SportsStore
             if (env.IsDevelopment())
             {
                 app.UseDeveloperExceptionPage();//Этот расширяющий метод отображает детали исключения,которое произошло в приложении, что полезно во время процесса разработки
+                app.UseStatusCodePages();
                 app.UseBrowserLink(); //Привязывания к браузеру (для удобной отладки) Microsoft.VisualStudio.Web.BrowserLink
+            }
+            else
+            {
+                app.UseExceptionHandler("/Error");//Для отображения своей станицы с ошибками
             }
             
             //Устарело. Для сессий нужно убрать      
